@@ -2,6 +2,7 @@ export interface ClientType {
     baseUrl: string;
     clientId: string;
     clientSecret: string;
+    debug?: boolean;
 }
 
 export interface UserType {
@@ -211,7 +212,7 @@ export interface LockType {
                 keyboardPwd: string;
                 keyboardPwdName: string;
                 keyboardPwdVersion: number;
-                keyboardPwdType: number;
+                keyboardPwdType: PwdType;
                 startDate: number;
                 endDate: number;
                 sendDate: number;
@@ -535,16 +536,42 @@ export interface PasscodeType {
         Parameters: {
             accessToken: string;
             lockId: number;
-            keyboardPwdVersion: number;
-            keyboardPwdType: number;
-            date: number;
-            keyboardPwdName?: string;
-            startDate?: number;
+            keyboardPwdType: PwdType;
+            keyboardPwdName?: number;
+            startDate: number;
             endDate?: number;
+            date: number;
         };
         Response: {
-            keyboardPwd: string;
-            keyboardPwdId: number;
+            keyboardPwd: string,
+            keyboardPwdId: number
+        }
+    };
+    List: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            pageNo: number;
+            pageSize: number;
+            date: number;
+        };
+        Response: {
+            list: {
+                keyboardPwdId: number,
+                lockId: number,
+                keyboardPwd: string,
+                keyboardPwdName: string,
+                keyboardPwdType: PwdType,
+                startDate: number,
+                endDate: number,
+                sendDate: number,
+                isCustom: number,
+                senderUsername: string
+            }[];
+            pageNo: number;
+            pageSize: number;
+            pages: number;
+            total: number;
         }
     };
     Delete: {
@@ -594,6 +621,101 @@ export interface PasscodeType {
             keyboardPwdId: number;
         }
     }
+}
+
+export interface IdentityCardType {
+    Add: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            cardNumber: string;
+            cardName: string;
+            startDate: number;
+            endDate: number;
+            date: number;
+            addType?: string;
+        };
+        Response: {
+            cardId: number;
+        }
+    }
+    Get: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            pageNo: number;
+            pageSize: number;
+            date: number;
+        };
+        Response: {
+            list: {
+                cardId: number,
+                lockId: number,
+                cardNumber: string,
+                cardName: string,
+                startDate: number,
+                endDate: number,
+                createDate: number,
+                senderUsername: string
+            }[];
+            pageNo: number;
+            pageSize: number;
+            pages: number;
+            total: number;
+        }
+    };
+    Delete: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            cardId: number;
+            date: number;
+            deleteType?: number;
+        };
+        Response: {
+            errcode: number;
+            errmsg: string;
+        }
+    };
+    ChangePeriod: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            cardId: number;
+            date: number;
+            startDate?: number;
+            endDate?: number;
+            changeType?: number;
+        };
+        Response: {
+            errcode: number;
+            errmsg: string;
+        }
+    };
+    Clear: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            date: number;
+        };
+        Response: {
+            errcode: number;
+            errmsg: string;
+        }
+    };
+    Rename: {
+        Parameters: {
+            accessToken: string;
+            lockId: number;
+            cardId: number;
+            date: number;
+            cardName: string;
+        };
+        Response: {
+            errcode: number;
+            errmsg: string;
+        }
+    };
 }
 
 export interface GatewayType {
@@ -835,4 +957,21 @@ export interface UnlockRecordsType {
             description: string;
         }
     }
+}
+
+export enum PwdType {
+    OneTime = 1,
+    Permanent,
+    Period,
+    Delete,
+    WeekendCyclic,
+    DailyCyclic,
+    WorkdayCyclic,
+    MondayCyclic,
+    TuesdayCyclic,
+    WednesdayCyclic,
+    ThursdayCyclic,
+    FridayCyclic,
+    SaturdayCyclic,
+    SundayCyclic
 }
